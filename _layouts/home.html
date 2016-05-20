@@ -14,7 +14,8 @@
         <div class="site-name__inner">
           <div class="name">{{ site.title }}</div>
           <div class="desc">{{site.description}}</div>
-          <div class="btn">Blog</div>
+          <div class="github_btn">Github</div>
+          <div class="blog_btn">Blog</div>
         </div>
       </div>
     </div>
@@ -66,12 +67,18 @@
     hoursSel.innerHTML = hours;
   }, 1000);
 
-  var btnSel = document.querySelector('.btn');
+  var btnSel = document.querySelector('.blog_btn');
   var header = document.getElementsByTagName('header')[0];
+  var btnGithub = document.querySelector('.github_btn');
 
   btnSel.addEventListener("click", function() {
     header.scrollIntoView();
   }, false);
+
+  btnGithub.addEventListener("click", function() {
+    window.location.href='https://github.com/JellyPaul';
+  }, false);
+
 
 </script>
 
