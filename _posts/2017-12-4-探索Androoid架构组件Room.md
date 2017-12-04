@@ -2,7 +2,7 @@
 layout: post
 title:  "探索Android架构组件Room"
 date:   2017-12-4 16:13:20 +0800
-categories:Android
+categories: Android
 ---
 
 ## 一、简介
@@ -15,7 +15,7 @@ Room是Google推出的Android架构组件库中的数据持久化组件库, 也�
 
 其关系如下图所示：
 
-![Room Architecture Diagram](https://cdn-images-1.medium.com/max/1600/1*nPLp8XsB7e529f82XgddyA.png)
+![Room Architecture Diagram](../../../../../mdimg/room_arch.png)
 
 ## 二、基本使用
 
