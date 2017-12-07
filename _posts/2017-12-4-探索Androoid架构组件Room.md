@@ -10,7 +10,7 @@ categories: Android
 Room是Google推出的Android架构组件库中的数据持久化组件库, 也可以说是在SQLite上实现的一套ORM解决方案。Room包含三个主要的部分：
 
 * **Database** : 持有DB和DAO
-* **Entity** : 定义数据表
+* **Entity** : 定义POJO类，即数据表结构
 * **DAO**(Data Access Objects) : 定义访问数据（增删改查）的接口
 
 其关系如下图所示：
@@ -281,7 +281,7 @@ AppDatabase db = Room.databaseBuilder(getApplicationContext(),
 
 在传统的SQLite API中，我们如果要升级数据库， 通常在`SQLiteOpenHelper.onUpgrade`方法执行数据库升级的SQL语句，这些sql语句的通常根据数据库版本以文件的方式或者用数组来管理。有人说这种方式升级数据库就像在拆炸弹，相比之下在Room中升级数据库简单的就像是按一个开关而已。
 
-Room提供了Migration类来实现数据库:
+Room提供了Migration类来实现数据库的升级:
 
 ```
 Room.databaseBuilder(getApplicationContext(), MyDb.class, "database-name")
@@ -304,17 +304,17 @@ static final Migration MIGRATION_2_3 = new Migration(2, 3) {
 };
 ```
 
-在创建Migration类时需要指定`startVersion`和`endVersion`, 代码中`MIGRATION_1_2 `和`MIGRATION_2_3 `的startVersion和endVersion是递增的， Migration其实是支持从版本1直接升到版本3，只要其`migrate()`方法里执行的语句正常即可。那么Room是怎么实现数据库升级的呢？其实本质上还是调用`SQLiteOpenHelper.onUpgrade`，Room中自己实现了一个`SQLiteOpenHelper`， 在`onUpgrade()`方法被调用时触发`Migration`，我们来看看当第一次访问数据库时，Room到底做了什么：
+在创建Migration类时需要指定`startVersion`和`endVersion`, 代码中`MIGRATION_1_2 `和`MIGRATION_2_3 `的startVersion和endVersion是递增的， Migration其实是支持从版本1直接升到版本3，只要其`migrate()`方法里执行的语句正常即可。那么Room是怎么实现数据库升级的呢？其实本质上还是调用`SQLiteOpenHelper.onUpgrade`，Room中自己实现了一个`SQLiteOpenHelper`， 在`onUpgrade()`方法被调用时触发`Migration`，当第一次访问数据库时，Room做了以下几件事：
 
-* 创建Room Database
+* 创建Room Database实例
 * `SQLiteOpenHelper.onUpgrade`被调用，并且触发`Migration`
-* 打开Database
+* 打开数据库
 
-这样一看， Room中处理数据库升级却是很像是加一个开关。
+这样一看， Room中处理数据库升级确实很像是加一个开关。
 
 ### 3.2 原有SQLite数据库迁移至Room
 
-因为Room使用的也是SQLite， 所以可以很好的支持原有Sqlite数据库的迁移。
+因为Room使用的也是SQLite， 所以可以很好的支持原有Sqlite数据库迁移到Room。
 
 假设原有一个版本号为1的数据库有一张表User, 现在要迁移到Room， 我们需要定义好Entity, DAO, Database, 然后创建Database时添加一个空实现的Migraton即可。需要注意的是，即使对数据库没有任何升级操作，也需要升级版本， 否则会抛异常`IllegalStateException `.
 
@@ -374,7 +374,7 @@ public class User {
 
 ## 五、总结
 
-在SQLite API方式实现数据持久化的项目中，相信都有一个任务繁重的`SQLiteOpenHelper`实现, 一堆维护表的字段的`Constant`类， 一堆代码类似的数据库访问类（DAO），访问数据库时需要做Cursor的遍历，构建并返回对应的POJO类...Room作为在SQLite之上封装的ORM库，比较直观的体验是：
+在SQLite API方式实现数据持久化的项目中，相信都有一个任务繁重的`SQLiteOpenHelper`实现, 一堆维护表的字段的`Constant`类， 一堆代码类似的数据库访问类（DAO），访问数据库时需要做Cursor的遍历，构建并返回对应的POJO类...相比之下，Room作为在SQLite之上封装的ORM库确实有诸多优势，比较直观的体验是：
 
 * 比Sqlite API更简单的使用方式
 * 省略了许多重复代码
@@ -384,7 +384,7 @@ public class User {
 想要了解更多Room相关内容可以戳下面的链接：
 
 *  Google Sample [https://github.com/googlesamples/android-architecture-components](https://github.com/googlesamples/android-architecture-components)
-* 数据库迁移[https://medium.com/google-developers/understanding-migrations-with-room-f01e04b07929](https://medium.com/google-developers/understanding-migrations-with-room-f01e04b07929)
+* Room数据库迁移[https://medium.com/google-developers/understanding-migrations-with-room-f01e04b07929](https://medium.com/google-developers/understanding-migrations-with-room-f01e04b07929)
 * Room使用引导说明 [https://medium.com/google-developers/7-steps-to-room-27a5fe5f99b2](https://medium.com/google-developers/7-steps-to-room-27a5fe5f99b2)
 * Room 🔗 RxJava [https://medium.com/google-developers/room-rxjava-acb0cd4f3757](https://medium.com/google-developers/room-rxjava-acb0cd4f3757)
 * 7 Pro-tips for Room [https://medium.com/google-developers/7-pro-tips-for-room-fbadea4bfbd1](https://medium.com/google-developers/7-pro-tips-for-room-fbadea4bfbd1)
