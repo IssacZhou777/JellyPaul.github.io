@@ -26,7 +26,8 @@ Room是Google推出的Android架构组件库中的数据持久化组件库, 也�
 一个简单Entity定义如下：
 
 ```
-@Entity(tableName = "user")
+@Entity(tableName = "user" 
+		  indices = {@Index(value = {"first_name", "last_name"})})
 public class User {
 
     @PrimaryKey
@@ -56,10 +57,11 @@ public class User {
 
 ```
 
-* `@Entity(tableName = "table_name**")` 注解POJO类，定义数据表名称 
+* `@Entity(tableName = "table_name**")` 注解POJO类，定义数据表名称;
 * `@PrimaryKey` 定义主键，如果一个Entity使用的是复合主键，可以通过`@Entity`注解的`primaryKeys ` 属性定义复合主键：`@Entity(primaryKeys = {"firstName", "lastName"})`
 * `@ColumnInfo(name = “column_name”)` 定义数据表中的字段名
 * `@Ignore` 用于告诉Room需要忽略的字段或方法
+* 建立索引：在`@Entity`注解的`indices`属性中添加索引字段。例如：`indices = {@Index(value = {"first_name", "last_name"}, unique = true), ...}`, `unique = true`可以确保表中不会出现`{"first_name", "last_name"}` 相同的数据。
 
 #### 1.2 Entitiy间的关系
 
@@ -216,7 +218,7 @@ public List<NameTuple> loadFullName();
 
 Room中查询操作除了返回POJO对象及其List以外， 还支持：
 
-* **`LiveData<T>`**  
+* **`LiveData<T>`**  :
 LiveData是架构组件库中提供的另一个组件，可以很好满足数据变化驱动UI刷新的的需求。Room会实现更新LiveData的代码。
 
 ```
@@ -224,16 +226,15 @@ LiveData是架构组件库中提供的另一个组件，可以很好满足数据
 public LiveData<List<User>> loadUsersFromRegionsSync(List<String> regions);
 ```
 
-* **`Flowablbe<T>`** **`Publisher<T>`**
-Room 支持返回RxJava2 的`Flowablbe `和`Publisher`对象，对于使用RxJava的项目可以很好的衔接， 但需要在gradle添加该依赖：`android.arch.persistence.room:rxjava2`。
+* **`Flowablbe<T>`** **`Maybe<T>`** **`Single<T>`**:
+Room 支持返回RxJava2 的`Flowablbe`, `Maybe`和`Single`对象，对于使用RxJava的项目可以很好的衔接， 但需要在gradle添加该依赖：`android.arch.persistence.room:rxjava2`。
 
 ```
 @Query("SELECT * from user where id = :id LIMIT 1")
 public Flowable<User> loadUserById(int id);
 ```
 
-* **`Cursor`**
-
+* **`Cursor`**:
 返回Cursor是为了支持现有项目中使用Cursor的场景，官方不建议直接返回Cursor.
 
 > Caution: It's highly discouraged to work with the Cursor API because it doesn't guarantee whether the rows exist or what values the rows contain. Use this functionality only if you already have code that expects a cursor and that you can't refactor easily.
