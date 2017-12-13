@@ -218,7 +218,7 @@ public List<NameTuple> loadFullName();
 
 Room中查询操作除了返回POJO对象及其List以外， 还支持：
 
-* **`LiveData<T>`**  :
+* **`LiveData<T>`**:
 LiveData是架构组件库中提供的另一个组件，可以很好满足数据变化驱动UI刷新的的需求。Room会实现更新LiveData的代码。
 
 ```
@@ -280,7 +280,7 @@ AppDatabase db = Room.databaseBuilder(getApplicationContext(),
 
 ### 3.1 Room数据库升级
 
-在传统的SQLite API中，我们如果要升级数据库， 通常在`SQLiteOpenHelper.onUpgrade`方法执行数据库升级的SQL语句，这些sql语句的通常根据数据库版本以文件的方式或者用数组来管理。有人说这种方式升级数据库就像在拆炸弹，相比之下在Room中升级数据库简单的就像是按一个开关而已。
+在传统的SQLite API中，我们如果要升级数据库， 通常在`SQLiteOpenHelper.onUpgrade`方法执行数据库升级的sql语句，这些sql语句的通常根据数据库版本以文件的方式或者用数组来管理。有人说这种方式升级数据库就像在拆炸弹，相比之下在Room中升级数据库简单的就像是按一个开关而已。
 
 Room提供了Migration类来实现数据库的升级:
 
@@ -377,10 +377,11 @@ public class User {
 
 在SQLite API方式实现数据持久化的项目中，相信都有一个任务繁重的`SQLiteOpenHelper`实现, 一堆维护表的字段的`Constant`类， 一堆代码类似的数据库访问类（DAO），访问数据库时需要做Cursor的遍历，构建并返回对应的POJO类...相比之下，Room作为在SQLite之上封装的ORM库确实有诸多优势，比较直观的体验是：
 
-* 比Sqlite API更简单的使用方式
+* 比SQLite API更简单的使用方式
 * 省略了许多重复代码
-* 能在编译是校验sql语句的正确性
-* 数据库相关的代码分为Entity, DAO, Database三个部分，结构清晰，可读性高
+* 能在编译时校验sql语句的正确性
+* 数据库相关的代码分为Entity, DAO, Database三个部分，结构清晰
+* 简单安全的数据库升级方案
 
 想要了解更多Room相关内容可以戳下面的链接：
 
